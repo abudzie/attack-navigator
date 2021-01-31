@@ -345,7 +345,8 @@ export class Gcolor {color: string; constructor(color: string) {this.color = col
 //semi-synonymous with "layer"
 export class ViewModel {
     // PROPERTIES & DEFAULTS
-
+    level: string = "HIGH-THREAT";
+    count: number = 0;
     name: string; // layer name
     domain: string = ""; // attack domain
     version: string = ""; // attack version
@@ -355,7 +356,109 @@ export class ViewModel {
 
     filters: Filter;
 
+
     metadata: Metadata[] = [];
+
+
+    map = new Map<string, number>();
+
+
+
+    mitigations = 
+    {
+ 
+        'T0810': [{name: "Authorization Enforcement", value: false}, {name: "Human User Authentication ", value:false},{name: "Network Allowlists", value:false} ],
+        'T0817': [{name: "Application Isolation and Sandboxing", value: false}, {name: "Exploit Protection ", value:false},{name: "Restrict Web-Based Content", value:false} ],
+        'T0818': [{name: "Encrypt Sensitive Information ", value: false}, {name: "Limit Hardware Installation", value:false},{name: "Network Segmentation", value:false} ],
+        'T0819': [{name: "Privileged Account Management", value: false}, {name: "Exploit Protection", value:false},{name: "Application Isolation and Sandboxing", value:false} ],
+        'T0822': [{name: "Disable or Remove Feature or Program ", value: false}, {name: "Multi-factor Authentication", value:false},{name: "Limit Access to Resource Over Network", value:false} ],
+        'T0883': [{name: "Network Segmentation ", value: false}],
+        'T0847': [{name: "Disable or Remove Feature or Program ", value: false}, {name: "Limit Hardware Installation", value:false},{name: "Operating System Configuration", value:false} ],
+        'T0865': [{name: "Antivirus/Antimalware", value: false}, {name: "Network Intrusion Prevention", value:false},{name: "Restrict Web-Based Content ", value:false} ],
+        'T0862': [{name: "Code Signing", value: false}, {name: "Update Software ", value:false},{name: "Audit", value:false} ],
+        'T0860': [{name: "Communication Authenticity ", value: false}, {name: "Encrypt Network Traffic", value:false},{name: "Minimize Wireless Signal Propagation", value:false} ],
+        'T0875': [{name: "Authorization Enforcement", value: false}, {name: "Human User Authentication", value:false},{name: "Network Allowlists", value:false} ],
+        'T0807': [{name: "Disable or Remove Feature or Program", value: false}, {name: "Execution Prevention", value:false} ],
+        'T0871': [{name: "Authorization Enforcement", value: false}, {name: "Human User Authentication", value:false},{name: "Access Management", value:false} ],
+        'T0830': [{name: "Communication Authenticity", value: false}, {name: "Static Network Configuration", value:false},{name: "Filter Network Traffic ", value:false} ],
+        'T0844': [{name: "Audit", value: false} ],
+        'T0873': [{name: "Code Signing ", value: false}, {name: "Restrict File and Directory Permissions", value:false},{name: "Encrypt Sensitive Information", value:false} ],
+        'T0853': [{name: "Application Isolation and Sandboxing", value: false}, {name: "Disable or Remove Feature or Program ", value:false},{name: "Execution Prevention ", value:false} ],
+        'T0863': [{name: "Antivirus/Antimalware ", value: false}, {name: "Code Signing" , value:false},{name: "Network Intrusion Prevention", value:false} ],
+        'T0874': [{name: "Restrict Library Loading ", value: false}, {name: "Audit" , value:false}],
+        'T0839': [{name: "Boot Integrity ", value: false}, {name: "Communication Authenticity" , value:false}, {name: "Network Allowlists" , value:false}],
+        'T0843': [{name: "Filter Network Traffic ", value: false}, {name: "Code Signing" , value:false}, {name: "Network Segmentation" , value:false}],
+        'T0857': [{name: "Encrypt Sensitive Information ", value: false}, {name: "Update Software " , value:false}, {name: "Network Segmentation" , value:false}],
+        'T0859': [{name: "Application Developer Guidance ", value: false}, {name: "Multi-factor Authentication " , value:false}, {name: "Password Policies" , value:false}],
+        'T0820': [{name: "Exploit Protection ", value: false}, {name: "Update Software " , value:false}, {name: "Threat Intelligence Program" , value:false}],
+        'T0872': [{name: "Restrict File and Directory Permissions  ", value: false}],
+        'T0849': [{name: "Code Signing ", value: false}, {name: "Execution Prevention " , value:false}, {name: "Restrict File and Directory Permissions" , value:false}],
+        'T0848': [{name: "Communication Authenticity ", value: false}, {name: "Network Allowlists " , value:false}, {name: "Software Process and Device Authentication" , value:false}],
+        'T0851': [{name: "Code Signing ", value: false}, {name: "Audit " , value:false}],
+        'T0856': [{name: "Communication Authenticity ", value: false}, {name: "Network Allowlists " , value:false}, {name: "Software Process and Device Authentication" , value:false}],
+        'T0858': [{name: "Communication Authenticity ", value: false}, {name: "Network Allowlists " , value:false}, {name: "Software Process and Device Authentication" , value:false}],
+        'T0808': [{name: "Network Segmentation  ", value: false}, {name: "Network Allowlists " , value:false}, {name: "Filter Network Traffic" , value:false}],
+        'T0824': [{name: "Mitigation Limited or Not Effective", value: false}],
+        'T0840': [{name: "Mitigation Limited or Not Effective", value: false}],
+        'T0841': [{name: "Network Segmentation  ", value: false}, {name: "Network Intrusion Prevention" , value:false}, {name: "Disable or Remove Feature or Program" , value:false}],
+        'T0842': [{name: "Static Network Configuration ", value: false}, {name: "Encrypt Network Traffic" , value:false}, {name: "Privileged Account Management" , value:false}],
+        'T0846': [{name: "Static Network Configuration ", value: false}],
+        'T0854': [{name: "Mitigation Limited or Not Effective", value: false}],
+        'T0812': [{name: "Access Management ", value: false}, {name: "Password Policies" , value:false}],
+        'T0866': [{name: "Exploit Protection", value: false}, {name: "Update Software" , value:false}, {name: "Vulnerability Scanning" , value:false}],
+        'T0867': [{name: "Network Intrusion Prevention", value: false}],
+    
+        'T0802': [{name: "Network Allowlists", value: false}, {name: "Network Segmentation" , value:false}],
+        'T0811': [{name: "User Training", value: false}, {name: "Restrict File and Directory Permissions" , value:false}, {name: "Privileged Account Management" , value:false}],
+        'T0868': [{name: "Communication Authenticity", value: false}, {name: "Software Process and Device Authentication" , value:false}, {name: "Network Segmentation" , value:false}],
+        'T0870': [{name: "Network Allowlists", value: false}, {name: "Network Segmentation" , value:false}, {name: "Human User Authentication" , value:false}],
+        'T0877': [{name: "Mitigation Limited or Not Effective", value: false}],
+    
+        'T0825': [{name: "Human User Authentication", value: false}, {name: "Operational Information Confidentiality" , value:false}, {name: "Encrypt Sensitive Information" , value:false}],
+        'T0801': [{name: "Mitigation Limited or Not Effective", value: false}],
+        'T0861': [{name: "Human User Authentication", value: false}, {name: "Software Process and Device Authentication" , value:false}, {name: "Network Allowlists" , value:false}],
+        'T0845': [{name: "Access Management", value: false}, {name: "Software Process and Device Authentication" , value:false}, {name: "Network Allowlists" , value:false}],
+        'T0850': [{name: "Filter Network Traffic", value: false}, {name: "Network Segmentation " , value:false}, {name: "Network Allowlists" , value:false}],
+        'T0852': [{name: "Mitigation Limited or Not Effective", value: false}],
+        'T0885': [{name: "Human User Authentication", value: false}, {name: "Disable or Remove Feature or Program" , value:false}, {name: "Network Intrusion Prevention" , value:false}],
+        'T0884': [{name: "Network Allowlists", value: false}, {name: "SSL/TLS Inspection" , value:false}, {name: "Filter Network Traffic" , value:false}],
+        'T0869': [{name: "Network Allowlists", value: false}, {name: "Network Intrusion Prevention" , value:false}, {name: "Network Segmentation" , value:false}],
+        'T0800': [{name: "Network Allowlists", value: false}, {name: "Communication Authenticity" , value:false}, {name: "Network Segmentation" , value:false}],
+        'T0878': [{name: "Network Allowlists", value: false}, {name: "Out-of-Band Communications Channel" , value:false}, {name: "Static Network Configuration" , value:false}],
+        'T0803': [{name: "Network Allowlists", value: false}, {name: "Out-of-Band Communications Channel" , value:false}, {name: "Static Network Configuration" , value:false}],
+        'T0804': [{name: "Network Allowlists", value: false}, {name: "Out-of-Band Communications Channel" , value:false}, {name: "Static Network Configuration" , value:false}],
+        'T0805': [{name: "Network Allowlists", value: false}, {name: "Out-of-Band Communications Channel" , value:false}, {name: "Network Segmentation" , value:false}],
+        'T0809': [{name: "Privileged Account Management", value: false}, {name: "Restrict File and Directory Permissions" , value:false}, {name: "Data Backup" , value:false}],
+        'T0814': [{name: "Watchdog Timers", value: false}],
+        'T0816': [{name: "Disable or Remove Feature or Program", value: false}, {name: "Authorization Enforcement" , value:false}, {name: "Human User Authentication " , value:false}],
+        'T0835': [{name: "Mitigation Limited or Not Effective", value: false}],
+        'T0838': [{name: "User Account Management", value: false}, {name: "Authorization Enforcement" , value:false}, {name: "Human User Authentication " , value:false}],
+        'T0833': [{name: "Audit", value: false}],
+        'T0806': [{name: "Software Process and Device Authentication", value: false}, {name: "Network Segmentation" , value:false}, {name: "Filter Network Traffic" , value:false}],
+        'T0836': [{name: "Authorization Enforcement ", value: false}, {name: "Audit" , value:false}],
+        'T0881': [{name: "Restrict File and Directory Permissions", value: false}, {name: "Restrict Registry Permissions" , value:false}, {name: "User Account Management" , value:false}],
+        'T0855': [{name: "Software Process and Device Authentication", value: false}, {name: "Communication Authenticity" , value:false}, {name: "Network Allowlists" , value:false}],
+        'T0879': [{name: "Network Allowlists", value: false}, {name: "Mechanical Protection Layers" , value:false}, {name: "Safety Instrumented Systems" , value:false}],
+        'T0813': [{name: "Out-of-Band Communications Channel", value: false}, {name: "Redundancy of Service" , value:false}, {name: "Data Backup" , value:false}],
+        'T0815': [{name: "Out-of-Band Communications Channel", value: false}, {name: "Redundancy of Service" , value:false}, {name: "Data Backup" , value:false}],
+        'T0826': [{name: "Out-of-Band Communications Channel", value: false}, {name: "Redundancy of Service" , value:false}, {name: "Data Backup" , value:false}],
+        'T0827': [{name: "Out-of-Band Communications Channel", value: false}, {name: "Redundancy of Service" , value:false}, {name: "Data Backup" , value:false}],
+        'T0828': [{name: "Data Backup" , value:false}],
+        'T0880': [{name: "Mechanical Protection Layers", value: false}, {name: "Safety Instrumented Systems" , value:false}],
+        'T0829': [{name: "Out-of-Band Communications Channel", value: false}, {name: "Redundancy of Service" , value:false}, {name: "Data Backup" , value:false}],
+        'T0831': [{name: "Out-of-Band Communications Channel", value: false}, {name: "Communication Authenticity" , value:false}, {name: "Data Backup" , value:false}],
+        'T0832': [{name: "Communication Authenticity", value: false}, {name: "Out-of-Band Communications Channel " , value:false}, {name: "Data Backup" , value:false}],
+        'T0882': [{name: "Operational Information Confidentiality", value: false}, {name: "Data Loss Prevention" , value:false}, {name: "Encrypt Sensitive Information" , value:false}]
+
+
+
+    }
+
+
+
+
+
+
 
     /*
      * sorting int meanings (see filterTechniques()):
@@ -388,12 +491,23 @@ export class ViewModel {
     techIDtoUIDMap: Object = {};
     techUIDtoIDMap: Object = {};
 
+
+
+
+
     constructor(name: string, uid: string, domainID: string, private dataService: DataService) {
         this.domainID = domainID;
         console.log("initializing ViewModel '" + name + "'");
         this.filters = new Filter();
         this.name = name;
         this.uid = uid;
+        for(let key of Object.keys(this.mitigations))
+        {
+            this.map.set(key, 0)
+        }
+    
+
+        
     }
 
     loadVMData() {
@@ -1303,7 +1417,7 @@ export class TechniqueVM {
     score: string = "";
     scoreColor: any; //color for score gradient
 
-    color: string = ""; //manually assigned color-class name
+    color: string = "#FF4D4D"; //manually assigned color-class name
     enabled: boolean = true;
     comment: string = ""
     metadata: Metadata[] = [];
